@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiFT - My Super Nifty To-Do List</title>
+    <style>
+        /* Your CSS styles here */
+        a:visited {
+            color: white;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+            background: #000F22;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 30px;
+            font-family: 'Verdana', sans-serif;
+            background: #000F22;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background: #000F22;
+        }
+
+        label {
+            font-weight: bold;
+            color: white;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 100px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #F17300;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            color: white;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+
+        tr:hover {
+            background-color: #054A91;
+        }
+
+        .home-link {
+            padding: 10px;
+        }
+
+        .container2 {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #000F22;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="home-link">
+        <a href="home.html">HOME</a>
+    </div>
+    <div class="container">
+        <h1>LiFT</h1>
+
+        <div>
+            <label for="addItem">Add Task:</label>
+            <input type="text" id="addItem" placeholder="Enter an item">
+            <button onclick="addItem()">Add</button>
+        </div>
+
+        <table id="list">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Completed</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="taskList">
+            </tbody>
+        </table>
+    </div>
+    <div class="container2"><br>
+        <button onclick="downloadTasks()">Download Tasks</button><br><br><br>
+        <div class="logo">LiFT</div>
+        <div class="subtext">Living, Studying and Finishing Tasks</div>
+    </div>
+
+    <script>
+        const tableBody = document.getElementById('taskList');
+        let tasks = [];
+
+        // Retrieve tasks from individual.txt file on page load
+        window.onload = function() {
+            fetch('individual.txt')
+                .then(response => response.text())
+                .then(data => {
+                    tasks = data.trim().split('\n').map(task => ({ item: task, completed: false }));
+                    displayTasks(tasks);
+                })
+                .catch(error => console.error('Error fetching tasks:', error));
+        };
+
+        function addItem() {
+            const addItemInput = document.getElementById('addItem');
+            const newItemText = addItemInput.value.trim();
+
+            if (newItemText !== '') {
+                tasks.push({ item: newItemText, completed: false });
+                updateTasksFile();
+                displayTasks(tasks);
+                addItemInput.value = '';
+            }
+        }
+
+        function toggleCompletion(index) {
+            tasks[index].completed = !tasks[index].completed;
+            updateTasksFile();
+            displayTasks(tasks);
+        }
+
+        function removeTask(index) {
+            tasks.splice(index, 1);
+            updateTasksFile();
+            displayTasks(tasks);
+        }
+
+        function displayTasks(tasks) {
+            tableBody.innerHTML = '';
+            tasks.forEach((task, index) => {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${task.item}</td>
+                    <td><input type="checkbox" onchange="toggleCompletion(${index})" ${task.completed ? 'checked' : ''}></td>
+                    <td><button onclick="removeTask(${index})">Remove</button></td>
+                `;
+                tableBody.appendChild(newRow);
+            });
+        }
+
+        function updateTasksFile() {
+            const tasksText = tasks.map(task => `${task.item}${task.completed ? ' (Completed)' : ''}`).join('\n');
+            const blob = new Blob([tasksText], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'individual.txt';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a); // Clean up by removing the temporary link element
+        }
+
+        function downloadTasks() {
+            updateTasksFile();
+        }
+    </script>
+</body>
+</html>

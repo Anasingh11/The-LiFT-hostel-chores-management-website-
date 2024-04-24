@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiFT - My Super Nifty To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #333;
+            padding: 10px;
+            color: #fff;
+        }
+
+        .header a {
+            color: #fff;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"], input[type="password"] {
+            width: calc(100% - 100px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="submit"] {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <a href="#">Home</a>
+    <a href="login.html">Login</a>
+    <a href="signup.html">Sign Up</a>
+</div>
+
+<div class="container">
+    <h1>Login</h1>
+    <form id="loginForm" onsubmit="return validateLoginForm()">
+        <div class="error" id="loginError"></div>
+        <label for="loginUsername">Username:</label>
+        <input type="text" id="loginUsername" name="loginUsername" required>
+        <br>
+        <label for="loginPassword">Password:</label>
+        <input type="password" id="loginPassword" name="loginPassword" required>
+        <br>
+        <input type="submit" value="Login">
+    </form>
+
+    <h1>Sign Up</h1>
+    <form id="signupForm" onsubmit="return validateSignupForm()">
+        <div class="error" id="signupError"></div>
+        <label for="signupUsername">Username:</label>
+        <input type="text" id="signupUsername" name="signupUsername" required>
+        <br>
+        <label for="signupPassword">Password:</label>
+        <input type="password" id="signupPassword" name="signupPassword" required>
+        <br>
+        <input type="submit" value="Sign Up">
+    </form>
+</div>
+
+<script>
+    function validateLoginForm() {
+        var username = document.getElementById('loginUsername').value;
+        var password = document.getElementById('loginPassword').value;
+        var loginError = document.getElementById('loginError');
+        if (username === '' || password === '') {
+            loginError.textContent = 'Please fill in all fields.';
+            return false;
+        }
+        return true;
+    }
+
+    function validateSignupForm() {
+        var username = document.getElementById('signupUsername').value;
+        var password = document.getElementById('signupPassword').value;
+        var signupError = document.getElementById('signupError');
+        if (username === '' || password === '') {
+            signupError.textContent = 'Please fill in all fields.';
+            return false;
+        }
+        return true;
+    }
+</script>
+
+</body>
+</html>

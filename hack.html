@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiFT - My Super Nifty To-Do List</title>
+    <style>
+        /* Your CSS styles here */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #000F22;
+            margin: 0;
+            padding: 0;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 30px;
+            font-family: 'Verdana', sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #000F22;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 100px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #F17300;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+
+        tr:hover {
+            background-color: #054A91;
+        }
+
+        .home-link {
+            padding: 10px;
+        }
+
+        .container2 {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #000F22;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            color: white;
+        }
+
+        .logo {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .subtext {
+            font-size: 16px;
+        }
+
+        .scorecard-container {
+            background-color: #000F22;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .scorecard-image {
+            max-width: 200px;
+            margin-bottom: 20px;
+        }
+
+        a:visited {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="home-link">
+        <a href="home.html">HOME</a>
+    </div>
+    <div class="container">
+        <h1>LiFT</h1>
+
+        <div>
+            <label for="addItem">Add Task:</label>
+            <input type="text" id="addItem" placeholder="Enter an item">
+            <label for="assignee">Assignee:</label>
+            <input type="text" id="assignee" placeholder="Enter assignee's name">
+            <button onclick="addItem()">Add</button>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <label for="showCompleted">Show Completed Tasks:</label>
+            <input type="checkbox" id="showCompleted" onchange="showCompleted()">
+        </div>
+
+        <table id="list">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Assignee</th>
+                    <th>Completed</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="taskList">
+            </tbody>
+        </table>
+    </div>
+    <div class="container2"><br>
+        <button onclick="showScorecard()">Show Scorecard</button><br><br><br>
+        <button onclick="downloadTasks()">Download Tasks</button><br><br>
+        <div class="logo">LiFT</div>
+        <div class="subtext">Living, Studying and Finishing Tasks</div>
+    </div>
+
+    <script>
+        window.onload = function () {
+            const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            displayTasks(tasks);
+        };
+
+        const tableBody = document.getElementById('taskList');
+
+        function addItem() {
+            const addItemInput = document.getElementById('addItem');
+            const addAssigneeInput = document.getElementById('assignee');
+            const newItemText = addItemInput.value;
+            const newAssignee = addAssigneeInput.value;
+
+            if (newItemText.trim() !== '') {
+                const newTask = {
+                    item: newItemText,
+                    assignee: newAssignee,
+                    completed: false
+                };
+                const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+                tasks.push(newTask);
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+                displayTasks(tasks);
+                addItemInput.value = '';
+                addAssigneeInput.value = '';
+            }
+        }
+
+                function showCompleted() {
+            const showCompletedCheckbox = document.getElementById('showCompleted');
+            const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            if (showCompletedCheckbox.checked) {
+                displayTasks(tasks);
+            } else {
+                const incompleteTasks = tasks.filter(task => !task.completed);
+                displayTasks(incompleteTasks);
+            }
+        }
+
+        function completeTask(index) {
+            let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            tasks[index].completed = true;
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            showCompleted();
+        }
+
+        function removeTask(index) {
+            let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            tasks.splice(index, 1);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            showCompleted();
+        }
+
+        function displayTasks(tasks) {
+            tableBody.innerHTML = '';
+            tasks.forEach((task, index) => {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${task.item}</td>
+                    <td>${task.assignee}</td>
+                    <td><input type="checkbox" onchange="completeTask(${index})" ${task.completed ? 'checked' : ''}></td>
+                    <td><button onclick="removeTask(${index})">Remove</button></td>
+                `;
+                tableBody.appendChild(newRow);
+            });
+        }
+
+        function showScorecard() {
+            const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            const completedTasks = tasks.filter(task => task.completed);
+            const assignees = completedTasks.reduce((acc, curr) => {
+                if (curr.assignee) {
+                    acc[curr.assignee] = (acc[curr.assignee] || 0) + 1;
+                }
+                return acc;
+            }, {});
+
+            const sortedAssignees = Object.entries(assignees).sort((a, b) => b[1] - a[1]);
+
+            const scorecardContainer = document.createElement('div');
+            scorecardContainer.classList.add('scorecard-container');
+
+            const scorecardHeader = document.createElement('h2');
+            scorecardHeader.innerText = 'Scorecard';
+            scorecardContainer.appendChild(scorecardHeader);
+
+            sortedAssignees.forEach(([assignee, count], index) => {
+                const scoreText = document.createElement('p');
+                scoreText.innerText = `${index + 1}. ${assignee}: ${count}`;
+                scorecardContainer.appendChild(scoreText);
+            });
+
+            const winnerText = document.createElement('p');
+            winnerText.innerHTML = `<strong>Winner: ${sortedAssignees[0] ? sortedAssignees[0][0] : 'None'}</strong>`;
+            scorecardContainer.appendChild(winnerText);
+
+            const scorecardImage = document.createElement('img');
+            scorecardImage.src = 'congo.png';
+            scorecardImage.alt = 'Congratulations';
+            scorecardImage.classList.add('scorecard-image');
+            scorecardContainer.appendChild(scorecardImage);
+
+            document.body.appendChild(scorecardContainer);
+        }
+
+        function downloadTasks() {
+            const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            const tasksText = tasks.map(task => `${task.item}: ${task.assignee}`).join('\n');
+            const blob = new Blob([tasksText], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'tasks.txt';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+    </script>
+</body>
+</html>

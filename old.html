@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>LiFT - My Super Nifty To-Do List</title>
+ <style>
+	a:visited {
+  color: white;}
+   body {
+     font-family: 'Arial', sans-serif;
+     background-color: #f8f8f8;
+     margin: 0;
+     padding: 0;
+	background:#000F22;
+   }
+
+   h1 {
+     text-align: center;
+     color: white;
+     margin-top: 30px;
+     font-family: 'Verdana', sans-serif;
+background:#000F22;
+   }
+
+   .container {
+     max-width: 600px;
+     margin: 0 auto;
+     padding: 20px;
+     background-color: #fff;
+     border-radius: 8px;
+     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+     font-family: 'Roboto', sans-serif;
+background:#000F22;
+color:white;
+   }
+
+   label {
+     font-weight: bold;
+   }
+
+   input[type="text"] {
+     width: calc(100% - 100px);
+     padding: 8px;
+     margin-bottom: 10px;
+     border-radius: 4px;
+     border: 1px solid #ccc;
+   }
+
+   button {
+     padding: 8px 16px;
+     border: none;
+     border-radius: 4px;
+     background-color: #4CAF50;
+     color: #fff;
+     cursor: pointer;
+   }
+
+   button:hover {
+     background-color: #45a049;
+   }
+
+   table {
+     width: 100%;
+     border-collapse: collapse;
+     margin-top: 20px;
+   }
+
+   th, td {
+     padding: 12px;
+     border-bottom: 1px solid #ddd;
+   }
+
+   th {
+     background-color: #f2f2f2;
+     text-align: left;
+   }
+
+   tr:hover {
+     background-color: #f5f5f5;
+   }
+	.header
+	{	font-size: 18px;
+		padding:20px;
+	}
+.container2
+{
+max-width: 600px;
+     margin: 0 auto;
+     padding: 20px;
+     background-color: #fff;
+     border-radius: 8px;
+     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+     font-family: 'Roboto', sans-serif;
+background:#000F22;
+color:white;
+text-align: center;
+}
+ </style>
+</head>
+<body>
+<div class="header">
+    <a href="home.html">Home</a>
+    <a href="login.html">Login</a>
+    <a href="signup.html">Sign Up</a>
+    <a href="hack.html">To DO List</a>
+</div>
+
+<div class="container">
+  <h1>LiFT</h1>
+
+  <div>
+    <label for="addItem">Add Task:</label>
+    <input type="text" id="addItem" placeholder="Enter an item">
+    <label for="assignee">Assignee:</label>
+    <input type="text" id="assignee" placeholder="Enter assignee's name">
+    <button onclick="addItem()">Add</button>
+  </div>
+
+  <div style="margin-top: 20px;">
+    <label for="removeItem">Remove Task:</label>
+    <input type="text" id="removeItem" placeholder="Enter an item to remove">
+    <button onclick="removeItem()">Remove</button>
+  </div>
+
+  <table id="list">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Assignee</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+<div class="container2">
+    <div class="logo">LiFT</div>
+    <div class="subtext">Living, Studying, Finishing Tasks</div>
+</div>
+<script>
+ const tableBody = document.querySelector('#list tbody');
+
+ function addItem() {
+   const addItemInput = document.getElementById('addItem');
+   const addAssigneeInput = document.getElementById('assignee');
+   const newItemText = addItemInput.value;
+   const newAssignee = addAssigneeInput.value;
+
+   if (newItemText.trim() !== '') {
+     const newRow = document.createElement('tr');
+     newRow.innerHTML = `
+       <td>${newItemText}</td>
+       <td>${newAssignee}</td>
+     `;
+     tableBody.appendChild(newRow);
+     addItemInput.value = '';
+     addAssigneeInput.value = '';
+   }
+ }
+
+ function removeItem() {
+   const removeItemInput = document.getElementById('removeItem');
+   const itemTextToRemove = removeItemInput.value.toLowerCase();
+   if (itemTextToRemove.trim() !== '') {
+     const items = tableBody.getElementsByTagName('tr');
+     for (let i = 0; i < items.length; i++) {
+       const itemText = items[i].firstElementChild.textContent.toLowerCase();
+       if (itemText === itemTextToRemove) {
+         tableBody.removeChild(items[i]);
+         break;
+       }
+     }
+     removeItemInput.value = '';
+   }
+ }
+
+</script>
+</body>
+</html>
